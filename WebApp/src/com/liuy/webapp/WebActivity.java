@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class WebActivity extends Activity
+public class WebActivity extends BaseActivity
 {
     private WebView myWebView = null;
 
