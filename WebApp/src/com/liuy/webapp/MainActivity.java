@@ -6,13 +6,14 @@ import java.io.InputStream;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EncodingUtils;
 
-import android.os.Bundle;
-import android.os.Handler;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -21,6 +22,18 @@ public class MainActivity extends Activity {
 	private WebView mWebView;
 	private Handler mHandler = new Handler();
 
+	/*
+	 * @SuppressLint("SetJavaScriptEnabled") protected void onCreate(Bundle
+	 * savedInstanceState) { super.onCreate(savedInstanceState);
+	 * setContentView(R.layout.webview); mWebView = (WebView)
+	 * findViewById(R.id.webview); WebSettings webSettings =
+	 * mWebView.getSettings(); webSettings.setJavaScriptEnabled(true);
+	 * mWebView.loadUrl("file:///android_asset/app/index.html"); //
+	 * mWebView.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, //
+	 * historyUrl);
+	 * 
+	 * }
+	 */
 	@SuppressLint("SetJavaScriptEnabled")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,10 +42,23 @@ public class MainActivity extends Activity {
 		mWebView = (WebView) findViewById(R.id.webview);
 		WebSettings webSettings = mWebView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
-		mWebView.addJavascriptInterface(new Contact(), "Contact");
+		// mWebView.addJavascriptInterface(new Contact(), "Contact");
 		// mWebView.loadUrl("file:///android_asset/app/index.html");
 		// mWebView.loadDataWithBaseURL(baseUrl, data, mimeType, encoding,
 		// historyUrl);
+
+		firstMethod();
+		//secondMethod();
+	}
+
+	/**
+	 * 可以正常显示
+	 */
+	private void firstMethod() {
+		mWebView.loadUrl("file:///android_asset/app/index.html");
+	}
+
+	private void secondMethod() {
 		String data = "";
 		try {
 			// 读取assets目录下的文件需要用到AssetManager对象的Open方法打开文件
@@ -44,10 +70,22 @@ public class MainActivity extends Activity {
 				baf.append(count);
 			}
 			data = EncodingUtils.getString(baf.toByteArray(), "utf-8");
+			// data = URLEncoder.encode(String.valueOf(baf.toByteArray()),
+			// "utf-8");
+			
+			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		// mWebView.loadData(data, "text/html", "utf-8");
+
+		// StringBuilder data1 = new StringBuilder(
+		// "<html><body bgcolor=\"#F2F6F8\"><font color='red'>font</font>");
+		// data1.append("</body></html>");
+		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.loadData(data, "text/html", "utf-8");
+		// mWebView.loadDataWithBaseURL("about:blank", data, "text/html",
+		// "utf-8", null);
 	}
 
 	private final class Contact {
